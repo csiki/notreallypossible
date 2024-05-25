@@ -47,7 +47,7 @@ wandb_run_name = 'whatev2' # 'run' + str(time.time())
 dataset = 'elec'
 gradient_accumulation_steps = 2 # used to simulate larger batch sizes
 batch_size = 32 # if gradient_accumulation_steps > 1, this is the micro-batch size
-block_size = 4000
+block_size = 10000
 vocab_size = 1023 + 2  # <3
 # model
 n_layer = 4

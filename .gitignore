@@ -4,4 +4,4 @@ out/
 /train.bin
 /val.bin
 /xs_idx.pkl
-nanoGPT/elec
+nanoGPT/data/elec

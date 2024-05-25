@@ -1,0 +1,9 @@
+numpy
+matplotlib
+wandb
+torch
+transformers
+datasets
+tiktoken
+wandb
+tqdm
