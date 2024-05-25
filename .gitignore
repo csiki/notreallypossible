@@ -1,0 +1,7 @@
+.idea/
+wandb/
+out/
+/train.bin
+/val.bin
+/xs_idx.pkl
+nanoGPT/elec
