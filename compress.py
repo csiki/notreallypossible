@@ -43,16 +43,18 @@ x, sr = read_wav(wav_files[0])
 xs, srs = zip(*[read_wav(w) for w in wav_files])
 n_uniq_vals = np.array([np.unique(x).shape[0] for x in xs])
 
-# uniq_vals = np.unique(np.concatenate(xs))
-# value_to_index = {val: idx for idx, val in enumerate(uniq_vals)}
-# xs_idx = [np.vectorize(value_to_index.get)(x) for x in tqdm('mapping', xs)]
-# np.save('xs_idx.npy', xs_idx)
-# pickle.dump({'uniq_vals': uniq_vals, 'xs_idx': xs_idx}, open('xs_idx.pkl', 'wb'))
+if not os.path.isfile('xs_idx.pkl'):
+    uniq_vals = np.unique(np.concatenate(xs))
+    value_to_index = {val: idx for idx, val in enumerate(uniq_vals)}
+    xs_idx = [np.vectorize(value_to_index.get)(x) for x in tqdm('mapping', xs)]
+    np.save('xs_idx.npy', xs_idx)
+    pickle.dump({'uniq_vals': uniq_vals, 'xs_idx': xs_idx}, open('xs_idx.pkl', 'wb'))
 
-with open('xs_idx.pkl', 'rb') as f:
-    idx_data = pickle.load(f)
-uniq_vals = idx_data['uniq_vals']
-xs_idx = idx_data['xs_idx']
+else:
+    with open('xs_idx.pkl', 'rb') as f:
+        idx_data = pickle.load(f)
+    uniq_vals = idx_data['uniq_vals']
+    xs_idx = idx_data['xs_idx']
 
 # nanogpt bins
 sos_token = np.uint16(1023)

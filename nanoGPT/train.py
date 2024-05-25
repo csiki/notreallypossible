@@ -29,6 +29,8 @@ from torch.distributed import init_process_group, destroy_process_group
 
 from model import GPTConfig, GPT
 
+# torchrun --standalone --nproc_per_node=8 train.py
+
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
@@ -46,7 +48,7 @@ wandb_run_name = 'whatev2' # 'run' + str(time.time())
 # data
 dataset = 'elec'
 gradient_accumulation_steps = 2 # used to simulate larger batch sizes
-batch_size = 32 # if gradient_accumulation_steps > 1, this is the micro-batch size
+batch_size = 16 # if gradient_accumulation_steps > 1, this is the micro-batch size
 block_size = 10000
 vocab_size = 1023 + 2  # <3
 # model
