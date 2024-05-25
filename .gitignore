@@ -5,3 +5,5 @@ out/
 /val.bin
 /xs_idx.pkl
 nanoGPT/data/elec
+venv/
+
