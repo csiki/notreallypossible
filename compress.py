@@ -46,7 +46,7 @@ n_uniq_vals = np.array([np.unique(x).shape[0] for x in xs])
 if not os.path.isfile('xs_idx.pkl'):
     uniq_vals = np.unique(np.concatenate(xs))
     value_to_index = {val: idx for idx, val in enumerate(uniq_vals)}
-    xs_idx = [np.vectorize(value_to_index.get)(x) for x in tqdm('mapping', xs)]
+    xs_idx = [np.vectorize(value_to_index.get)(x) for x in tqdm(xs, 'mapping')]
     np.save('xs_idx.npy', xs_idx)
     pickle.dump({'uniq_vals': uniq_vals, 'xs_idx': xs_idx}, open('xs_idx.pkl', 'wb'))
 
