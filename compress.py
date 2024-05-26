@@ -35,6 +35,8 @@ def read_wav(filename):
 # tree solution
 # massive parallel compute find patterns solution
 # it's a binary tree to the next ms and a little better, but you can update at each sample
+#   make a tree, then split/rearrange it into binary
+#   nodes can be longer than 200b
 # just do a nanogpt
 
 
