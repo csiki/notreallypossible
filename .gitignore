@@ -3,7 +3,6 @@ wandb/
 out/
 /train.bin
 /val.bin
-/xs_idx.pkl
-nanoGPT/data/elec
+nanoGPT/data/elec*
 venv/
-
+*.pkl

@@ -12,22 +12,6 @@ import pickle
 import networkx as nx
 
 
-with open('xs_idx.pkl', 'rb') as f:
-    idx_data = pickle.load(f)
-uniq_vals = idx_data['uniq_vals']
-xs_idx = idx_data['xs_idx']
-
-minl = min([x.shape[0] for x in xs_idx])
-minl = (minl // 20) * 20
-xs_idx = np.stack([x[:minl] for x in xs_idx])
-
-splits = xs_idx.reshape((xs_idx.shape[0], -1, 20))
-uniq_splits = set(tuple(x) for x in tqdm(splits.reshape(-1, 20), 'uniq'))
-split_map = {u: ui for ui, u in enumerate(uniq_splits)}
-splits_tupld = map(tuple, splits.reshape(-1, 20))
-split_idx = np.array([split_map[x] for x in tqdm(splits_tupld, 'map')]).reshape(xs_idx.shape[0], -1)
-
-
 def build_forest(split_idx):
     forest = nx.DiGraph()
 
@@ -52,6 +36,9 @@ def count_trees(forest):
     num_trees = nx.number_connected_components(undirected_forest)
     return num_trees
 
+
+with open('ms_idx.pkl', 'rb') as f:
+    split_idx = pickle.load(f)
 
 # Build the forest
 forest = build_forest(split_idx)

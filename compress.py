@@ -69,7 +69,7 @@ train_data = xs_idx[n_valid:]
 valid_data = xs_idx[:n_valid]
 
 os.makedirs('nanoGPT/data/elec', exist_ok=True)
-np.concatenate(xs_idx).astype(np.uint16).tofile('nanoGPT/data/elec/train.bin')
+np.concatenate(xs_idx).astype(np.uint16).tofile('nanoGPT/data/elec/train.bin')  # no worries
 np.concatenate(valid_data).astype(np.uint16).tofile('nanoGPT/data/elec/val.bin')
 
 
