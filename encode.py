@@ -15,6 +15,8 @@ from fun import *
 
 
 # TODO little slow
+# TODO constexpr compute mapping into std arrays
+# TODO bzip it to get more
 
 with open('xs_idx.pkl', 'rb') as f:
     xs_map = pickle.load(f)['xs_map']
