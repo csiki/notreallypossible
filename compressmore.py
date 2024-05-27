@@ -19,26 +19,36 @@ xs_idx = idx_data['xs_idx']
 # 20 samples = 1 ms
 minl = min([x.shape[0] for x in xs_idx])
 minl = (minl // 20) * 20
-xs_idx = np.stack([x[:minl] for x in xs_idx])
+xs_idx = [x[:x.shape[0] // 20 * 20] for x in xs_idx]
 
-ms = xs_idx.reshape((xs_idx.shape[0], -1, 20))
-uniq_splits = set(tuple(x) for x in tqdm(ms.reshape(-1, 20), 'uniq'))
-ms_map = {u: ui for ui, u in enumerate(uniq_splits)}
-ms_tupld = map(tuple, ms.reshape(-1, 20))
-ms_idx = np.array([ms_map[x] for x in tqdm(ms_tupld, 'map')]).reshape(xs_idx.shape[0], -1)
+ms = np.concatenate(xs_idx).reshape(-1, 20)
+uniq_ms = set(tuple(x) for x in tqdm(ms, 'uniq'))
+ms_map = {u: ui for ui, u in enumerate(uniq_ms)}
+ms_tupld = [map(tuple, x.reshape(-1, 20)) for x in xs_idx]
+ms_idx = [np.array([ms_map[xi] for xi in x], dtype=np.uint32)
+          for x in tqdm(ms_tupld, 'map')]
+
+ms_uniq_idx = np.array(list(ms_map.keys()))
+np.save('ms_map.npy', ms_uniq_idx.astype(np.uint16))
+
+with open('ms_map.pkl', 'wb') as f:
+    pickle.dump(list(ms_map.keys()), f)
 
 with open('ms_idx.pkl', 'wb') as f:
-    pickle.dump(ms_idx, f)
+    pickle.dump({'ms_idx': ms_idx, 'ms_map': ms_map}, f)
+print('saved ms_idx', flush=True)
 
 # nanogpt bins
-sos_token = np.uint16(1023)
-eos_token = np.uint16(1024)
-n_valid = int(.1 * len(xs_idx))
-np.random.shuffle(ms_idx)
+sos_token = np.uint16(ms_idx.max() + 1)
+eos_token = np.uint16(ms_idx.max() + 2)
+n_valid = int(.1 * len(ms_idx))
+
+ms_idx = [np.concatenate([[sos_token], idx, [eos_token]]) for idx in tqdm(ms_idx, 'cat')]
+random.shuffle(ms_idx)
 
 train_data = ms_idx[n_valid:]
 valid_data = ms_idx[:n_valid]
 
 os.makedirs('nanoGPT/data/elec2', exist_ok=True)
-np.concatenate(ms_idx).astype(np.uint16).tofile('nanoGPT/data/elec2/train.bin')  # intended don't freak out nerd
-np.concatenate(valid_data).astype(np.uint16).tofile('nanoGPT/data/elec2/val.bin')
+np.concatenate(ms_idx).astype(np.uint32).tofile('nanoGPT/data/elec2/train.bin')  # intended don't freak out nerd
+np.concatenate(valid_data).astype(np.uint32).tofile('nanoGPT/data/elec2/val.bin')  # TODO uint32 not 16 !

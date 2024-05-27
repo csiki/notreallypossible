@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-rm -rf data
-unzip data.zip
+#rm -rf data
+#unzip data.zip
 
 get_file_size() {
   find "$1" -printf "%s\n"
@@ -12,7 +12,7 @@ encoder_size=$(get_file_size encode)
 decoder_size=$(get_file_size decode)
 total_size_compressed=$((encoder_size + decoder_size))
 
-for file in data/*
+for file in data/*.wav
 do
   echo "Processing $file"
   compressed_file_path="${file}.brainwire"

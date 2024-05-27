@@ -5,4 +5,10 @@ out/
 /val.bin
 nanoGPT/data/elec*
 venv/
+__pycache__/
+
 *.pkl
+*.wav.copy
+*.wav.brainwire
+*.npy
+*test*.wav
