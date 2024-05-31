@@ -19,10 +19,15 @@ xs_idx = idx_data['xs_idx']
 # 20 samples = 1 ms
 minl = min([x.shape[0] for x in xs_idx])
 minl = (minl // 20) * 20
-xs_idx = [x[:x.shape[0] // 20 * 20] for x in xs_idx]
+shifts = range(20)  # [0]
 
-ms = np.concatenate(xs_idx).reshape(-1, 20)
-uniq_ms = set(tuple(x) for x in tqdm(ms, 'uniq'))
+uniq_mss = []
+for shift in shifts:
+    xs_idx = [x[shift:(x.shape[0] - shift) // 20 * 20] for x in xs_idx]  # TODO from here, combine like here: https://chatgpt.com/c/373ba750-30b8-46e7-b2a7-7382386cbbaa
+    ms = np.concatenate(xs_idx).reshape(-1, 20)
+    uniq_ms = set(tuple(x) for x in tqdm(ms, 'uniq'))
+    uniq_mss.append(uniq_ms)
+
 ms_map = {u: ui for ui, u in enumerate(uniq_ms)}
 ms_tupld = [map(tuple, x.reshape(-1, 20)) for x in xs_idx]
 ms_idx = [np.array([ms_map[xi] for xi in x], dtype=np.uint32)
