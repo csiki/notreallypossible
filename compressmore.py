@@ -19,16 +19,20 @@ xs_idx = idx_data['xs_idx']
 # 20 samples = 1 ms
 minl = min([x.shape[0] for x in xs_idx])
 minl = (minl // 20) * 20
-shifts = range(20)  # [0]
+shifts = range(6)  # [0] TODO
 
-uniq_mss = []
-for shift in shifts:
-    xs_idx = [x[shift:(x.shape[0] - shift) // 20 * 20] for x in xs_idx]  # TODO from here, combine like here: https://chatgpt.com/c/373ba750-30b8-46e7-b2a7-7382386cbbaa
-    ms = np.concatenate(xs_idx).reshape(-1, 20)
-    uniq_ms = set(tuple(x) for x in tqdm(ms, 'uniq'))
-    uniq_mss.append(uniq_ms)
+final_uniq_ms = set()
+for si, shift in enumerate(shifts):
+    shifted_xs_idx = [x[shift:x.shape[0] // 20 * 20 - (20 - shift)] for x in xs_idx]  # TODO from here, combine like here: https://chatgpt.com/c/373ba750-30b8-46e7-b2a7-7382386cbbaa
+    ms = np.concatenate(shifted_xs_idx).reshape(-1, 20)
+    uniq_ms = set(tuple(x) for x in tqdm(ms, f'uniq {si}/{len(shifts)}'))
+    final_uniq_ms.update(uniq_ms)
 
-ms_map = {u: ui for ui, u in enumerate(uniq_ms)}
+ms_map = {u: ui for ui, u in enumerate(final_uniq_ms)}
+ncodes = len(ms_map)
+npossible_codes = sum((x.shape[0] for x in xs_idx)) // 20
+print(f'{ncodes} / {npossible_codes} = {ncodes / npossible_codes}')
+
 ms_tupld = [map(tuple, x.reshape(-1, 20)) for x in xs_idx]
 ms_idx = [np.array([ms_map[xi] for xi in x], dtype=np.uint32)
           for x in tqdm(ms_tupld, 'map')]
